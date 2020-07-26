@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 
 public class SimpleHttpServer implements Closeable {
   private final ServerOption serverOption;
-  private boolean running;
+  private volatile boolean running;
   private final ExecutorService dispatcher;
 
   public SimpleHttpServer(ServerOption serverOption) {
@@ -30,11 +30,12 @@ public class SimpleHttpServer implements Closeable {
       }
     } catch (IOException e) {
       e.printStackTrace();
+      dispatcher.shutdown();
     }
   }
 
   @Override
-  public void close() throws IOException {
+  public void close() {
     this.running = false;
     this.dispatcher.shutdown();
   }
@@ -52,9 +53,7 @@ public class SimpleHttpServer implements Closeable {
               data ->
                   new SuccessResponse("Request Successfully Handled for : " + data.completeUrl()));
       server.start();
-
-    } catch (IOException e) {
-      e.printStackTrace();
+      Runtime.getRuntime().addShutdownHook(new Thread(server::close));
     }
   }
 }

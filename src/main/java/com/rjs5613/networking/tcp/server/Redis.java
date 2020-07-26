@@ -17,7 +17,7 @@ public class Redis {
     if(map.containsKey(key)){
       return map.get(key);
     } else {
-      throw new RuntimeException("Key doesnot exists");
+      throw new RuntimeException("Key doesn't exists");
     }
   }
 

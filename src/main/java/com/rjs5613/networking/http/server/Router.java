@@ -2,16 +2,14 @@ package com.rjs5613.networking.http.server;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class Router {
 
   private static final Router REQUEST_MAPPER = new Router();
-  private final Map<Route, RequestHandler> map;
-  private RequestHandler notFoundHandler;
+  private final Map<Route, RequestHandler> handlerMapping;
 
   private Router() {
-    map = new HashMap<>();
+    handlerMapping = new HashMap<>();
   }
 
   public static Router instance() {
@@ -19,28 +17,22 @@ public class Router {
   }
 
   public Router register(Route route, RequestHandler handler) {
-    this.map.put(route, handler);
+    this.handlerMapping.put(route, handler);
     return this;
-  }
-
-  public Router registerNotFoundHandler(RequestHandler handler) {
-    this.notFoundHandler = handler;
-    return this;
-  }
-
-  private RequestHandler getNotFoundHandler() {
-    return Objects.requireNonNullElseGet(
-        this.notFoundHandler, () -> data -> new Response("No Handler Present", 404));
   }
 
   public RequestHandler getHandler(Route route) {
-    if (map.containsKey(route)) {
-      return this.map.get(route);
+    if (handlerMapping.containsKey(route)) {
+      return this.handlerMapping.get(route);
     }
-    return getNotFoundHandler();
+    return notFoundHandler();
   }
 
-  public RequestHandler getErrorHandler(Exception e) {
+  public RequestHandler serverErrorHandler(Exception e) {
     return data -> new Response(e.getMessage(), 500);
+  }
+
+  private RequestHandler notFoundHandler() {
+    return data -> new Response("No Handler Present", 404);
   }
 }

@@ -31,7 +31,7 @@ public class HttpRequestHandler implements Runnable {
     } catch (Exception e) {
       e.printStackTrace();
       try {
-        RequestHandler handler = Router.instance().getErrorHandler(e);
+        RequestHandler handler = Router.instance().serverErrorHandler(e);
         clientConnection
             .getOutputStream()
             .write(handler.handle(null).toHttpString().getBytes(StandardCharsets.UTF_8));

@@ -24,11 +24,12 @@ public class HttpRequestProcessor {
         httpRequest.setHeader(line);
       }
     }
+    //TODO: Implement Body Reader
+    /*
     while (StringUtils.isBlank(line)) {
       line = br.readLine();
     }
-    //TODO: Implement Body Reader
-    /*StringBuilder requestBody = new StringBuilder(line);
+    StringBuilder requestBody = new StringBuilder(line);
     line = br.readLine();
     while (line != null) {
       requestBody.append(line.trim());
