@@ -21,10 +21,10 @@ public class HttpRequestHandler implements Runnable {
       BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
       HttpRequestProcessor reqProcessor = new HttpRequestProcessor(br);
       HttpRequest process = reqProcessor.process();
-      RequestDefinition requestDefinition = new RequestDefinition(process.method(), process.path());
-      RequestHandler handler = RequestMapper.instance().getHandler(requestDefinition);
-      //Object handle = handler.handle(process);
-      clientConnection.getOutputStream().write(new HttpResponse("Response 1234").toHttpResponse().getBytes(StandardCharsets.UTF_8));
+      Route route = Route.of(process.method(), process.path());
+      RequestHandler handler = Router.instance().getHandler(route);
+      Response handle = handler.handle(process);
+      clientConnection.getOutputStream().write(new HttpResponse(handle).toHttpResponse().getBytes(StandardCharsets.UTF_8));
     } catch (Exception e) {
       e.printStackTrace();
     }

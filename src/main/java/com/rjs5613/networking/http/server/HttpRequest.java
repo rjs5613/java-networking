@@ -14,6 +14,8 @@ public class HttpRequest {
   private final HashMap<String, String> queryParams;
   private final Map<String, String> headers;
 
+  private String body;
+
   public HttpRequest(String line) {
     String[] values = line.split(" ");
     if(values.length<3) {
@@ -58,5 +60,13 @@ public class HttpRequest {
 
   public String completeUrl() {
     return completeUrl;
+  }
+
+  public String getBody() {
+    return body;
+  }
+
+  public void setBody(String toString) {
+    this.body = toString;
   }
 }

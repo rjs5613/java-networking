@@ -1,12 +1,11 @@
 package com.rjs5613.networking.http.server;
 
-
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class HttpRequestProcessor  {
+import org.apache.commons.lang3.StringUtils;
+
+public class HttpRequestProcessor {
   private final BufferedReader br;
 
   public HttpRequestProcessor(BufferedReader br) {
@@ -15,17 +14,26 @@ public class HttpRequestProcessor  {
 
   public HttpRequest process() throws IOException {
     String line = br.readLine();
-    while(line == null) {
+    while (StringUtils.isBlank(line)) {
       line = br.readLine();
     }
     HttpRequest httpRequest = new HttpRequest(line);
-    while (line != null) {
+    while (StringUtils.isNotBlank(line)) {
       line = br.readLine();
-      if(StringUtils.isNotBlank(line)) {
+      if (StringUtils.isNotBlank(line)) {
         httpRequest.setHeader(line);
-        break;
       }
     }
+    while (StringUtils.isBlank(line)) {
+      line = br.readLine();
+    }
+    /*StringBuilder requestBody = new StringBuilder(line);
+    line = br.readLine();
+    while (line != null) {
+      requestBody.append(line.trim());
+      line = br.readLine();
+    }
+    httpRequest.setBody(requestBody.toString());*/
     return httpRequest;
   }
 }

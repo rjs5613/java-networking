@@ -5,14 +5,23 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class HttpResponse {
 
-  private final String body;
+  private final Object body;
   private final Map<String, String> headers;
+  private final HttpStatus httpStatus;
 
-  public HttpResponse(Object handle) {
-    this.body = handle.toString();
+  public HttpResponse(Response handle) {
+    if(Objects.nonNull(handle)) {
+      this.body = handle.result();
+      this.httpStatus = handle.httpStatus();
+    } else {
+      this.body = null;
+      this.httpStatus = HttpStatus.OK;
+    }
+
     this.headers = new HashMap<>();
     updateDefaultHeaders();
   }
@@ -36,7 +45,7 @@ public class HttpResponse {
   public String toHttpResponse() {
     String bodyJson = "{\"result\":\""+body+"\"}";
     headers.put("Content-Length", Integer.toString(bodyJson.length()));
-    StringBuilder finalResponse = new StringBuilder("\nHTTP/1.1 200 OK\n");
+    StringBuilder finalResponse = new StringBuilder("\n").append("HTTP/1.1 ").append(httpStatus.getDisplayValue()).append("\n");
     headers.forEach((key, value) -> finalResponse.append(key).append(": ").append(value).append("\n"));
     finalResponse.append("\r\n");
     finalResponse.append(bodyJson);
