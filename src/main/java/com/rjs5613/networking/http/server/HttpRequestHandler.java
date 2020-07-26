@@ -1,6 +1,7 @@
 package com.rjs5613.networking.http.server;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -27,6 +28,12 @@ public class HttpRequestHandler implements Runnable {
       clientConnection.getOutputStream().write(new HttpResponse(handle).toHttpResponse().getBytes(StandardCharsets.UTF_8));
     } catch (Exception e) {
       e.printStackTrace();
+      try {
+        RequestHandler handler = Router.instance().getErrorHandler(e);
+        clientConnection.getOutputStream().write(new HttpResponse(handler.handle(null)).toHttpResponse().getBytes(StandardCharsets.UTF_8));
+      } catch (IOException ioException) {
+        ioException.printStackTrace();
+      }
     }
   }
 }

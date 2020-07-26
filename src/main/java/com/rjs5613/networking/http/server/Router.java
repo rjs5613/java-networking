@@ -39,4 +39,8 @@ public class Router {
     }
     return getNotFoundHandler();
   }
+
+  public RequestHandler getErrorHandler(Exception e) {
+    return data-> new Response(e.getMessage(), 500);
+  }
 }

@@ -1,10 +1,10 @@
 package com.rjs5613.networking.http.server;
 
-import com.rjs5613.networking.tcp.server.InvalidRequestException;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.rjs5613.networking.tcp.server.InvalidRequestException;
 
 public class HttpRequest {
 
@@ -18,8 +18,8 @@ public class HttpRequest {
 
   public HttpRequest(String line) {
     String[] values = line.split(" ");
-    if(values.length<3) {
-      throw new InvalidRequestException("");
+    if (values.length < 3) {
+      throw new InvalidRequestException("Invalid Http Request");
     }
     this.method = Method.get(values[0]);
     this.completeUrl = values[1];
@@ -27,17 +27,21 @@ public class HttpRequest {
     this.path = split[0];
     this.queryParams = new HashMap<>();
     this.headers = new HashMap<>();
-    if(split.length>1) {
+    if (split.length > 1) {
       String queryString = split[1];
       String[] split1 = queryString.split("&");
-      Arrays.stream(split1).forEach(queryPart ->{
-        String[] query = queryPart.split("=");
-        queryParams.put(query[0], query[1]);
-      });
+      Arrays.stream(split1)
+          .forEach(
+              queryPart -> {
+                String[] query = queryPart.split("=");
+                if (query.length > 1) {
+                  queryParams.put(query[0], query[1]);
+                }
+              });
     }
   }
 
-  public Method method(){
+  public Method method() {
     return method;
   }
 
@@ -55,7 +59,7 @@ public class HttpRequest {
 
   public void setHeader(String headerString) {
     String[] split = headerString.split(":");
-    headers.put(split[0].trim(), headerString.substring(split[0].length()+2));
+    headers.put(split[0].trim(), headerString.substring(split[0].length() + 2));
   }
 
   public String completeUrl() {
