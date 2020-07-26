@@ -12,8 +12,8 @@ public class Route {
     this.path = path;
   }
 
-  public static Route of(Method get, String s) {
-    return new Route(get, s);
+  public static Route of(Method method, String path) {
+    return new Route(method, path);
   }
 
   @Override

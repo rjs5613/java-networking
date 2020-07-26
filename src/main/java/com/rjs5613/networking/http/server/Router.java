@@ -41,6 +41,6 @@ public class Router {
   }
 
   public RequestHandler getErrorHandler(Exception e) {
-    return data-> new Response(e.getMessage(), 500);
+    return data -> new Response(e.getMessage(), 500);
   }
 }

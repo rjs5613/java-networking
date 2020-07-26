@@ -24,13 +24,17 @@ public class HttpRequestHandler implements Runnable {
       HttpRequest process = reqProcessor.process();
       Route route = Route.of(process.method(), process.path());
       RequestHandler handler = Router.instance().getHandler(route);
-      Response handle = handler.handle(process);
-      clientConnection.getOutputStream().write(new HttpResponse(handle).toHttpResponse().getBytes(StandardCharsets.UTF_8));
+      Response response = handler.handle(process);
+      clientConnection
+          .getOutputStream()
+          .write(response.toHttpString().getBytes(StandardCharsets.UTF_8));
     } catch (Exception e) {
       e.printStackTrace();
       try {
         RequestHandler handler = Router.instance().getErrorHandler(e);
-        clientConnection.getOutputStream().write(new HttpResponse(handler.handle(null)).toHttpResponse().getBytes(StandardCharsets.UTF_8));
+        clientConnection
+            .getOutputStream()
+            .write(handler.handle(null).toHttpString().getBytes(StandardCharsets.UTF_8));
       } catch (IOException ioException) {
         ioException.printStackTrace();
       }
